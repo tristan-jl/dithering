@@ -28,12 +28,14 @@ fn main() {
         &input_path,
         img.dimensions()
     );
-    let img = img.resize(800, 400, FilterType::Nearest);
+    // let img = img.resize(800, 400, FilterType::Nearest);
     let buf = img.to_rgb8();
     println!("Dithering...");
     let res = quantise_and_dither_image(&buf, &palette, ColourSpace::RGB);
+    let res2 = quantise_and_dither_image(&buf, &palette, ColourSpace::CIELAB);
     println!("Done");
 
     res.save(&output_path).unwrap();
+    res2.save("cie_".to_string() + &output_path).unwrap();
     println!("Wrote output to '{}'", &output_path);
 }
