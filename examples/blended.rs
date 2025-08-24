@@ -5,7 +5,16 @@ use inky::Palette;
 use inky::quantise_and_dither_image;
 
 fn main() {
-    let palette = Palette::from(
+    let palette = Palette::from_blend(
+        [
+            [0, 0, 0],
+            [255, 255, 255],
+            [255, 255, 0],
+            [255, 0, 0],
+            [0, 0, 255],
+            [0, 255, 0],
+        ]
+        .as_slice(),
         [
             [0, 0, 0],
             [161, 164, 165],
@@ -13,9 +22,9 @@ fn main() {
             [156, 72, 75],
             [61, 59, 94],
             [58, 91, 70],
-            // [255, 255, 255],
         ]
         .as_slice(),
+        0.7,
     );
     let mut args = std::env::args();
     args.next(); // throw away program name

@@ -3,6 +3,7 @@
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
     rust-overlay.url = "github:oxalica/rust-overlay";
+    naersk.url = "github:nix-community/naersk";
   };
 
   outputs =
@@ -11,6 +12,7 @@
       nixpkgs,
       flake-utils,
       rust-overlay,
+      naersk,
     }:
     flake-utils.lib.eachDefaultSystem (
       system:
@@ -21,14 +23,23 @@
         };
         rustToolchain = pkgs.pkgsBuildHost.rust-bin.fromRustupToolchainFile ./rust-toolchain.toml;
         nativeBuildInputs = with pkgs; [
+          cargo
+          rustc
+        ];
+        buildInputs = with pkgs; [
           nixd
           rust-analyzer
+          rustPackages.clippy
           rustToolchain
         ];
-        buildInputs = [ ];
+        naersk' = pkgs.callPackage naersk { };
       in
       with pkgs;
       {
+        defaultPackage = naersk'.buildPackage {
+          src = ./.;
+        };
+
         devShells.default = mkShell {
           inherit buildInputs nativeBuildInputs;
 

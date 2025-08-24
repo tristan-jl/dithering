@@ -5,17 +5,17 @@ use inky::Palette;
 use inky::quantise_and_dither_image;
 
 fn main() {
-    let palette = Palette::from(
-        [
-            [0, 0, 0],
-            [161, 164, 165],
-            [208, 190, 71],
-            [156, 72, 75],
-            [61, 59, 94],
-            [58, 91, 70],
-            // [255, 255, 255],
-        ]
-        .as_slice(),
+    let palette = Palette::from_hex_text(
+        "2f321b
+64472e
+b56036
+e25462
+fccb65
+1c3abe
+45b3c3
+fdafa0
+dec69c
+b4c9de",
     );
     let mut args = std::env::args();
     args.next(); // throw away program name
@@ -30,7 +30,7 @@ fn main() {
     );
     let img = img.resize(800, 400, FilterType::Nearest);
     let buf = img.to_rgb8();
-    println!("Dithering...");
+    println!("Quantising and dithering...");
     let res = quantise_and_dither_image(&buf, &palette, ColourSpace::RGB);
     println!("Done");
 
