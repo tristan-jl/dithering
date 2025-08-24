@@ -1,9 +1,9 @@
-use image::Rgb;
-
 use crate::f32_to_u8;
 use crate::space::{ColourSpace, EuclideanDistance};
-use anyhow::Result;
 use anyhow::anyhow;
+use anyhow::{Context, Result};
+use image::Rgb;
+use std::path::Path;
 
 pub struct Palette(Vec<Rgb<u8>>);
 
@@ -56,6 +56,39 @@ impl Palette {
             .collect::<Result<Vec<[u8; 3]>>>()?;
 
         Ok(x.into())
+    }
+
+    /// Loads a palette from a Tinted Scheme
+    /// <https://github.com/tinted-theming/schemes>
+    ///
+    /// # Errors
+    ///
+    /// This function will return an error if is unable to parse the yaml file.
+    pub fn from_tinted_scheme_yaml<P: AsRef<Path> + ToString>(path: P) -> Result<Self> {
+        let fc = std::fs::read_to_string(&path)
+            .context(format!("Unable to find file '{}'", &path.to_string()))?;
+        let lines = fc.lines();
+        let mut res = Vec::new();
+        for p_line in lines {
+            if p_line.trim().starts_with("base") {
+                let mut a = p_line.split(':');
+                a.next()
+                    .context(format!("Bad format, no colon: {p_line:?}"))?;
+                let hex_str = a
+                    .next()
+                    .context(format!("Bad format, after colon: {p_line:?}"))?;
+                let hex_str_2 = hex_str
+                    .trim()
+                    .strip_prefix("\"#")
+                    .context(format!("Bad format, no #: {hex_str:?}"))?
+                    .strip_suffix("\"")
+                    .context("Bad format, missing quote at end")?;
+                let x = u32::from_str_radix(hex_str_2.trim(), 16)?.to_be_bytes();
+                res.push([x[1], x[2], x[3]]);
+            }
+        }
+
+        Ok(res.into())
     }
 
     #[must_use]
