@@ -1,22 +1,24 @@
+use anyhow::Result;
 use image::GenericImageView;
 use image::imageops::FilterType;
 use inky::ColourSpace;
 use inky::Palette;
 use inky::quantise_and_dither_image;
 
-fn main() {
+fn main() -> Result<()> {
     let palette = Palette::from_hex_text(
-        "2f321b
-64472e
-b56036
-e25462
-fccb65
-1c3abe
-45b3c3
-fdafa0
-dec69c
-b4c9de",
-    );
+        "
+    2f321b
+    64472e
+    b56036
+    e25462
+    fccb65
+    1c3abe
+    45b3c3
+    fdafa0
+    dec69c
+    b4c9de",
+    )?;
     let mut args = std::env::args();
     args.next(); // throw away program name
     let input_path = args.next().expect("usage: inky <input_path> <output_path>");
@@ -36,4 +38,6 @@ b4c9de",
 
     res.save(&output_path).unwrap();
     println!("Wrote output to '{}'", &output_path);
+
+    Ok(())
 }

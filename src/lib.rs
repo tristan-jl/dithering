@@ -1,12 +1,14 @@
-pub mod pallette;
+pub mod palette;
 pub mod space;
 
-pub use pallette::Palette;
+pub use palette::Palette;
 pub use space::ColourSpace;
 
 use image::RgbImage;
 use itertools::Itertools;
 
+#[allow(clippy::cast_sign_loss)]
+#[allow(clippy::cast_possible_truncation)]
 fn f32_to_u8(input: f32) -> u8 {
     input.round().clamp(0.0, 255.0) as u8
 }
@@ -58,14 +60,15 @@ pub fn quantise_and_dither_image(
     res
 }
 
+#[allow(clippy::pedantic)]
 #[must_use]
-pub fn image_to_bytes(buf: &RgbImage, pallette: &Palette) -> Vec<u8> {
+pub fn image_to_bytes(buf: &RgbImage, palette: &Palette) -> Vec<u8> {
     let (w, h) = buf.dimensions();
     let mut res = Vec::with_capacity((w * h) as usize);
     for mut i in &buf.pixels().chunks(2) {
         let l = i.next().unwrap();
         let r = i.next().unwrap();
-        res.push(pallette.to_idx(l) << 4 | pallette.to_idx(r));
+        res.push(palette.to_idx(l) << 4 | palette.to_idx(r));
     }
 
     res
