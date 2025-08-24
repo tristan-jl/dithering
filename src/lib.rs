@@ -7,6 +7,10 @@ pub use space::ColourSpace;
 use image::RgbImage;
 use itertools::Itertools;
 
+pub mod themes {
+    include!(concat!(env!("OUT_DIR"), "/theme.rs"));
+}
+
 #[allow(clippy::cast_sign_loss)]
 #[allow(clippy::cast_possible_truncation)]
 fn f32_to_u8(input: f32) -> u8 {

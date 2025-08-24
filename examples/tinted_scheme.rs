@@ -4,9 +4,10 @@ use image::GenericImageView;
 use inky::ColourSpace;
 use inky::Palette;
 use inky::quantise_and_dither_image;
+use inky::themes::BASE16_TOKYO_NIGHT_DARK;
 
 fn main() -> Result<()> {
-    let palette = Palette::from_tinted_scheme_yaml("./themes/tokyo-night-dark.yaml")?;
+    let palette = Palette::from(BASE16_TOKYO_NIGHT_DARK.as_slice());
     let mut args = std::env::args();
     args.next(); // throw away program name
     let input_path = args
