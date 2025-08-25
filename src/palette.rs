@@ -64,8 +64,8 @@ impl Palette {
     /// # Errors
     ///
     /// This function will return an error if is unable to parse the yaml file.
-    pub fn from_tinted_scheme_yaml<P: AsRef<Path> + ToString>(path: P) -> Result<Self> {
-        let fc = std::fs::read_to_string(&path)
+    pub fn from_tinted_scheme_yaml<P: AsRef<Path> + ToString>(path: &P) -> Result<Self> {
+        let fc = std::fs::read_to_string(path)
             .context(format!("Unable to find file '{}'", &path.to_string()))?;
         let lines = fc.lines();
         let mut res = Vec::new();

@@ -59,7 +59,7 @@ fn rgb_to_xyz(input: [u8; 3]) -> [f32; 3] {
 // From https://en.wikipedia.org/wiki/CIELAB_color_space#Converting_between_CIELAB_and_CIE_XYZ_coordinates
 const REF_X: f32 = 95.0489;
 const REF_Y: f32 = 100.0;
-const REF_Z: f32 = 108.8840;
+const REF_Z: f32 = 108.884;
 
 fn xyz_to_cielab(input: [f32; 3]) -> [f32; 3] {
     fn f(v: f32) -> f32 {
@@ -78,6 +78,7 @@ fn xyz_to_cielab(input: [f32; 3]) -> [f32; 3] {
 }
 
 mod tests {
+    #[allow(unused_imports)] // clippy can't read macros?
     use super::*;
 
     macro_rules! rgb_to_xyz_tests {
