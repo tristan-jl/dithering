@@ -1,11 +1,11 @@
 use anyhow::Context;
 use anyhow::Result;
+use dithering::ColourSpace;
+use dithering::Palette;
+use dithering::quantise_and_dither_image;
+use dithering::themes::BASE16_TOKYO_NIGHT_DARK;
 use image::GenericImageView;
 use image::imageops::FilterType;
-use inky::ColourSpace;
-use inky::Palette;
-use inky::quantise_and_dither_image;
-use inky::themes::BASE16_TOKYO_NIGHT_DARK;
 
 fn main() -> Result<()> {
     let palette = Palette::from(BASE16_TOKYO_NIGHT_DARK.as_slice());
@@ -25,10 +25,10 @@ fn main() -> Result<()> {
     args.next(); // throw away program name
     let input_path = args
         .next()
-        .context("usage: inky <input_path> <output_path>")?;
+        .context("usage: dithering <input_path> <output_path>")?;
     let output_path = args
         .next()
-        .context("usage: inky <input_path> <output_path>")?;
+        .context("usage: dithering <input_path> <output_path>")?;
 
     let img =
         image::open(&input_path).context(format!("Failed to open image at '{input_path}'"))?;

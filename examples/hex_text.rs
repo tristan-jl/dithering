@@ -1,9 +1,9 @@
 use anyhow::Result;
+use dithering::ColourSpace;
+use dithering::Palette;
+use dithering::quantise_and_dither_image;
 use image::GenericImageView;
 use image::imageops::FilterType;
-use inky::ColourSpace;
-use inky::Palette;
-use inky::quantise_and_dither_image;
 
 fn main() -> Result<()> {
     let palette = Palette::from_hex_text(
@@ -21,8 +21,12 @@ fn main() -> Result<()> {
     )?;
     let mut args = std::env::args();
     args.next(); // throw away program name
-    let input_path = args.next().expect("usage: inky <input_path> <output_path>");
-    let output_path = args.next().expect("usage: inky <input_path> <output_path>");
+    let input_path = args
+        .next()
+        .expect("usage: dithering <input_path> <output_path>");
+    let output_path = args
+        .next()
+        .expect("usage: dithering <input_path> <output_path>");
 
     let img = image::open(&input_path).unwrap();
     println!(

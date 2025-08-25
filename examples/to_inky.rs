@@ -1,9 +1,9 @@
+use dithering::ColourSpace;
+use dithering::Palette;
+use dithering::image_to_bytes;
+use dithering::quantise_and_dither_image;
 use image::GenericImageView;
 use image::imageops::FilterType;
-use inky::ColourSpace;
-use inky::Palette;
-use inky::image_to_bytes;
-use inky::quantise_and_dither_image;
 
 fn main() {
     let palette = Palette::from(
@@ -19,7 +19,9 @@ fn main() {
     );
     let mut args = std::env::args();
     args.next(); // throw away program name
-    let input_path = args.next().expect("usage: inky <input_path> <output_path>");
+    let input_path = args
+        .next()
+        .expect("usage: dithering <input_path> <output_path>");
 
     let img = image::open(&input_path).unwrap();
     println!(

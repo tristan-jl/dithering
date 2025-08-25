@@ -54,6 +54,16 @@ dependencies = [
 ]
 
 [[package]]
+name = "dithering"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "image",
+ "itertools",
+ "serde_yaml",
+]
+
+[[package]]
 name = "either"
 version = "1.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -110,16 +120,6 @@ checksum = "f2481980430f9f78649238835720ddccc57e52df14ffce1c6f37391d61b563e9"
 dependencies = [
  "equivalent",
  "hashbrown",
-]
-
-[[package]]
-name = "inky"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "image",
- "itertools",
- "serde_yaml",
 ]
 
 [[package]]
