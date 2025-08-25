@@ -30,11 +30,11 @@ fn main() {
         img.dimensions()
     );
     let img = img.resize(800, 400, FilterType::Nearest);
-    let buf = img.to_rgb8();
+    let mut buf = img.to_rgb8();
     println!("Quantising and dithering...");
-    let res = quantise_and_dither_image(&buf, &palette, ColourSpace::RGB);
+    quantise_and_dither_image(&mut buf, &palette, ColourSpace::RGB);
     println!("Done");
 
-    let bytes = image_to_bytes(&res, &palette);
+    let bytes = image_to_bytes(&buf, &palette);
     println!("Got some bytes: '{:?}'", &bytes);
 }

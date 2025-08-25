@@ -24,12 +24,12 @@ fn main() -> Result<()> {
         &input_path,
         img.dimensions()
     );
-    let buf = img.to_rgb8();
+    let mut buf = img.to_rgb8();
     println!("Dithering...");
-    let res = quantise_and_dither_image(&buf, &palette, ColourSpace::RGB);
+    quantise_and_dither_image(&mut buf, &palette, ColourSpace::RGB);
     println!("Done");
 
-    res.save(&output_path)
+    buf.save(&output_path)
         .context(format!("Failed to write image to '{output_path}'"))?;
     println!("Wrote output to '{}'", &output_path);
 

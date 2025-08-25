@@ -35,12 +35,12 @@ fn main() -> Result<()> {
         img.dimensions()
     );
     let img = img.resize(800, 400, FilterType::Nearest);
-    let buf = img.to_rgb8();
+    let mut buf = img.to_rgb8();
     println!("Quantising and dithering...");
-    let res = quantise_and_dither_image(&buf, &palette, ColourSpace::RGB);
+    quantise_and_dither_image(&mut buf, &palette, ColourSpace::RGB);
     println!("Done");
 
-    res.save(&output_path).unwrap();
+    buf.save(&output_path).unwrap();
     println!("Wrote output to '{}'", &output_path);
 
     Ok(())

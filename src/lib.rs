@@ -25,44 +25,50 @@ pub fn quantise_image(buf: &mut RgbImage, palette: &Palette, space: ColourSpace)
 }
 
 #[must_use]
-pub fn quantise_and_dither_image(
+pub fn new_quantise_and_dither_image(
     buf: &RgbImage,
     palette: &Palette,
     space: ColourSpace,
 ) -> RgbImage {
     let mut res = buf.clone();
+    quantise_and_dither_image(&mut res, palette, space);
+    res
+}
+
+pub fn quantise_and_dither_image(buf: &mut RgbImage, palette: &Palette, space: ColourSpace) {
     let (max_width, max_height) = buf.dimensions();
 
-    buf.enumerate_pixels().for_each(|(x, y, old_pixel)| {
-        fn helper(input: f32, quant_err: f32, factor: f32) -> u8 {
-            f32_to_u8(input + quant_err * factor)
-        }
-
-        res[(x, y)] = palette.closest_colour(space, old_pixel);
-
-        if x > 0 && x < max_width - 1 && y < max_height - 1 {
-            let mut right_pixel = res[(x + 1, y)];
-            let mut bottom_left_pixel = res[(x - 1, y + 1)];
-            let mut bottom_pixel = res[(x, y + 1)];
-            let mut bottom_right_pixel = res[(x + 1, y + 1)];
-
-            for ((i, &old), &new) in old_pixel.0.iter().enumerate().zip(res[(x, y)].0.iter()) {
-                let quant_err = f32::from(old) - f32::from(new);
-                right_pixel.0[i] = helper(f32::from(right_pixel.0[i]), quant_err, 7.0 / 16.0);
-                bottom_left_pixel.0[i] =
-                    helper(f32::from(bottom_left_pixel.0[i]), quant_err, 3.0 / 16.0);
-                bottom_pixel.0[i] = helper(f32::from(bottom_pixel.0[i]), quant_err, 5.0 / 16.0);
-                bottom_right_pixel.0[i] =
-                    helper(f32::from(bottom_right_pixel.0[i]), quant_err, 1.0 / 16.0);
+    for x in 0..max_width {
+        for y in 0..max_height {
+            fn helper(input: f32, quant_err: f32, factor: f32) -> u8 {
+                f32_to_u8(input + quant_err * factor)
             }
-            res[(x + 1, y)] = right_pixel;
-            res[(x - 1, y + 1)] = bottom_left_pixel;
-            res[(x, y + 1)] = bottom_pixel;
-            res[(x + 1, y + 1)] = bottom_right_pixel;
-        }
-    });
 
-    res
+            let old_pixel = buf[(x, y)];
+            buf[(x, y)] = palette.closest_colour(space, &old_pixel);
+
+            if x > 0 && x < max_width - 1 && y < max_height - 1 {
+                let mut right_pixel = buf[(x + 1, y)];
+                let mut bottom_left_pixel = buf[(x - 1, y + 1)];
+                let mut bottom_pixel = buf[(x, y + 1)];
+                let mut bottom_right_pixel = buf[(x + 1, y + 1)];
+
+                for ((i, &old), &new) in old_pixel.0.iter().enumerate().zip(old_pixel.0.iter()) {
+                    let quant_err = f32::from(old) - f32::from(new);
+                    right_pixel.0[i] = helper(f32::from(right_pixel.0[i]), quant_err, 7.0 / 16.0);
+                    bottom_left_pixel.0[i] =
+                        helper(f32::from(bottom_left_pixel.0[i]), quant_err, 3.0 / 16.0);
+                    bottom_pixel.0[i] = helper(f32::from(bottom_pixel.0[i]), quant_err, 5.0 / 16.0);
+                    bottom_right_pixel.0[i] =
+                        helper(f32::from(bottom_right_pixel.0[i]), quant_err, 1.0 / 16.0);
+                }
+                buf[(x + 1, y)] = right_pixel;
+                buf[(x - 1, y + 1)] = bottom_left_pixel;
+                buf[(x, y + 1)] = bottom_pixel;
+                buf[(x + 1, y + 1)] = bottom_right_pixel;
+            }
+        }
+    }
 }
 
 #[allow(clippy::pedantic)]
