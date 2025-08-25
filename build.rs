@@ -39,10 +39,9 @@ fn write(in_dir: &OsStr, out_file: &mut File, num_colours: u8) {
 
             writeln!(
                 out_file,
-                "pub const BASE{}_{}: [[u8; 3]; {}] = {:?};",
-                num_colours,
+                "/// Source: <https://github.com/tinted-theming/schemes/blob/spec-0.11/base{num_colours}/{f_name}.yaml>
+                pub const BASE{num_colours}_{}: [[u8; 3]; {num_colours}] = {:?};",
                 f_name.replace('-', "_").to_uppercase(),
-                num_colours,
                 palette
             )
             .unwrap();

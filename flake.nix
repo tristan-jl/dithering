@@ -2,7 +2,10 @@
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
-    rust-overlay.url = "github:oxalica/rust-overlay";
+    rust-overlay = {
+      url = "github:oxalica/rust-overlay";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
     crane.url = "github:ipetkov/crane";
   };
 
@@ -30,7 +33,13 @@
           root = unfilteredRoot;
           fileset = lib.fileset.unions [
             (craneLib.fileset.commonCargoSources unfilteredRoot)
-            (lib.fileset.fileFilter (file: lib.any file.hasExt [ "yaml" ]) unfilteredRoot)
+            (lib.fileset.fileFilter (
+              file:
+              lib.any file.hasExt [
+                "md"
+                "yaml"
+              ]
+            ) unfilteredRoot)
           ];
         };
 

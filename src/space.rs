@@ -1,12 +1,18 @@
 use image::Rgb;
 
-pub trait EuclideanDistance {
+pub(crate) trait EuclideanDistance {
     fn distance_sq(&self, c1: Rgb<u8>, c2: Rgb<u8>) -> f32;
 }
 
+/// Type for describing difference colour spaces.
+///
+/// Implements different distance metrics.
 #[derive(Copy, Clone, Debug)]
 pub enum ColourSpace {
+    /// Simple RGB colour space
     RGB,
+    /// Colour space designed to be perceptually uniform.
+    /// <https://en.wikipedia.org/wiki/CIELAB_color_space>
     CIELAB,
 }
 

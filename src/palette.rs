@@ -6,7 +6,7 @@ use image::Rgb;
 use std::path::Path;
 
 /// Palette
-/// Represents a color palette as a collection of RGB colors.
+/// Represents a colour palette as a collection of RGB colours.
 pub struct Palette(Vec<Rgb<u8>>);
 
 impl From<&[[u8; 3]]> for Palette {
@@ -52,12 +52,13 @@ impl Palette {
         Ok(res.into())
     }
 
-    /// Creates a new Palette by parsing a string of hexadecimal color values.
+    /// Creates a new Palette by parsing a string of hexadecimal colour values.
     ///
     /// The text is split by lines, with one colour per line.
     ///
     /// # Examples
     /// ```
+    /// use dithering::Palette;
     /// let palette = Palette::from_hex_text("
     /// 2f321b
     /// 64471e
@@ -123,7 +124,7 @@ impl Palette {
         &self.0
     }
 
-    /// Finds the closest color in the palette to a given pixel using the specified color space.
+    /// Finds the closest colour in the palette to a given pixel using the specified colour space.
     #[must_use]
     pub fn closest_colour(&self, space: ColourSpace, pixel: &Rgb<u8>) -> Rgb<u8> {
         let mut closest_colour_idx = 0;

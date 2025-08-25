@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 pub mod palette;
 pub mod space;
 
@@ -18,23 +20,14 @@ fn f32_to_u8(input: f32) -> u8 {
     input.round().clamp(0.0, 255.0) as u8
 }
 
+/// Quantises an image to the nearest colours in the given colour space and given palette.
 pub fn quantise_image(buf: &mut RgbImage, palette: &Palette, space: ColourSpace) {
     buf.pixels_mut().for_each(|pixel| {
         *pixel = palette.closest_colour(space, pixel);
     });
 }
 
-#[must_use]
-pub fn new_quantise_and_dither_image(
-    buf: &RgbImage,
-    palette: &Palette,
-    space: ColourSpace,
-) -> RgbImage {
-    let mut res = buf.clone();
-    quantise_and_dither_image(&mut res, palette, space);
-    res
-}
-
+/// Quantises an image using the given palette and colour space and applies Floyd–Steinberg dithering.
 pub fn quantise_and_dither_image(buf: &mut RgbImage, palette: &Palette, space: ColourSpace) {
     let (max_width, max_height) = buf.dimensions();
 
@@ -71,6 +64,7 @@ pub fn quantise_and_dither_image(buf: &mut RgbImage, palette: &Palette, space: C
     }
 }
 
+/// Encodes an image into a compact byte representation using the given palette.
 #[allow(clippy::pedantic)]
 #[must_use]
 pub fn image_to_bytes(buf: &RgbImage, palette: &Palette) -> Vec<u8> {
