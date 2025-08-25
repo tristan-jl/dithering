@@ -5,6 +5,8 @@ use anyhow::{Context, Result};
 use image::Rgb;
 use std::path::Path;
 
+/// Palette
+/// Represents a color palette as a collection of RGB colors.
 pub struct Palette(Vec<Rgb<u8>>);
 
 impl From<&[[u8; 3]]> for Palette {
@@ -19,6 +21,11 @@ impl From<Vec<[u8; 3]>> for Palette {
 }
 
 impl Palette {
+    /// Creates a new Palette by blending 2 palettes together based on the given saturation.
+    ///
+    /// # Errors
+    ///
+    /// Returns an error if saturation is not 0 <= s <= 1.
     pub fn from_blend(
         desat_palette: &[[u8; 3]],
         sat_palette: &[[u8; 3]],
@@ -45,6 +52,25 @@ impl Palette {
         Ok(res.into())
     }
 
+    /// Creates a new Palette by parsing a string of hexadecimal color values.
+    ///
+    /// The text is split by lines, with one colour per line.
+    ///
+    /// # Examples
+    /// ```
+    /// let palette = Palette::from_hex_text("
+    /// 2f321b
+    /// 64471e
+    /// 1c3abf
+    /// fdafa0
+    /// dec69c
+    /// b4c9de",
+    /// ).unwrap();
+    /// ```
+    ///
+    /// # Errors
+    ///
+    /// Returns an Error if it is unable to parse the string.
     pub fn from_hex_text(input: &str) -> Result<Self> {
         let x = input
             .trim()
@@ -91,6 +117,13 @@ impl Palette {
         Ok(res.into())
     }
 
+    /// Returns the palette colours.
+    #[must_use]
+    pub fn get_colours(&self) -> &[Rgb<u8>] {
+        &self.0
+    }
+
+    /// Finds the closest color in the palette to a given pixel using the specified color space.
     #[must_use]
     pub fn closest_colour(&self, space: ColourSpace, pixel: &Rgb<u8>) -> Rgb<u8> {
         let mut closest_colour_idx = 0;
@@ -107,6 +140,9 @@ impl Palette {
         self.0[closest_colour_idx]
     }
 
+    /// Returns the index of the palette colour of the pixel provided.
+    ///
+    /// If the pixel isn't a palette colour, returns 0.
     #[must_use]
     pub fn to_idx(&self, pixel: &Rgb<u8>) -> u8 {
         for (i, c) in self.0.iter().enumerate() {
