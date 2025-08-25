@@ -25,7 +25,8 @@ fn main() {
         ]
         .as_slice(),
         0.7,
-    );
+    )
+    .unwrap();
     let mut args = std::env::args();
     args.next(); // throw away program name
     let input_path = args.next().expect("usage: inky <input_path> <output_path>");

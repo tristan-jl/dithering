@@ -5,20 +5,22 @@ use image::imageops::FilterType;
 use inky::ColourSpace;
 use inky::Palette;
 use inky::quantise_and_dither_image;
+use inky::themes::BASE16_TOKYO_NIGHT_DARK;
 
 fn main() -> Result<()> {
-    let palette = Palette::from(
-        [
-            [0, 0, 0],
-            [161, 164, 165],
-            [208, 190, 71],
-            [156, 72, 75],
-            [61, 59, 94],
-            [58, 91, 70],
-            // [255, 255, 255],
-        ]
-        .as_slice(),
-    );
+    let palette = Palette::from(BASE16_TOKYO_NIGHT_DARK.as_slice());
+    // let palette = Palette::from(
+    //     [
+    //         [0, 0, 0],
+    //         [161, 164, 165],
+    //         [208, 190, 71],
+    //         [156, 72, 75],
+    //         [61, 59, 94],
+    //         [58, 91, 70],
+    //         // [255, 255, 255],
+    //     ]
+    //     .as_slice(),
+    // );
     let mut args = std::env::args();
     args.next(); // throw away program name
     let input_path = args

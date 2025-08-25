@@ -1,12 +1,13 @@
 use std::env;
 use std::ffi::OsStr;
+use std::ffi::OsString;
 use std::fs::File;
 use std::io::Write;
 use std::path::Path;
 use std::process::Command;
 
-fn write(file: &mut File, num_colours: u8) {
-    let base_dir = Path::new("tinted-schemes").join(format!("base{num_colours}"));
+fn write(in_dir: &OsStr, out_file: &mut File, num_colours: u8) {
+    let base_dir = Path::new(&in_dir).join(format!("base{num_colours}"));
     for entry in std::fs::read_dir(&base_dir).expect("dir exists") {
         let entry = entry.unwrap();
         let path = entry.path();
@@ -21,7 +22,6 @@ fn write(file: &mut File, num_colours: u8) {
                 let mut a = base.split('.');
                 a.next().unwrap()
             };
-            // let f_name = path.to_str().unwrap();
             let contents = std::fs::read_to_string(&path).expect("Unable to read base16 file");
             let yaml: serde_yaml::Value = serde_yaml::from_str(&contents).unwrap();
             let palette: Vec<[u8; 3]> = yaml
@@ -39,7 +39,7 @@ fn write(file: &mut File, num_colours: u8) {
                 .collect();
 
             writeln!(
-                file,
+                out_file,
                 "pub const BASE{}_{}: [[u8; 3]; {}] = {:?};",
                 num_colours,
                 f_name.replace('-', "_").to_uppercase(),
@@ -52,7 +52,8 @@ fn write(file: &mut File, num_colours: u8) {
 }
 
 fn main() {
-    if !Path::new("./tinted-schemes/").exists() {
+    let in_dir = env::var_os("THEME_DIR").unwrap_or("./tinted-schemes/".into());
+    if !Path::new(&in_dir).exists() {
         let _ = Command::new("git")
             .args(["submodule", "update", "--init", "tinted-schemes"])
             .status();
@@ -61,8 +62,8 @@ fn main() {
     let out_dir = env::var_os("OUT_DIR").unwrap();
     let dest_path = Path::new(&out_dir).join("theme.rs");
     let mut f = File::create(&dest_path).unwrap();
-    write(&mut f, 16);
-    write(&mut f, 24);
+    write(&in_dir, &mut f, 16);
+    write(&in_dir, &mut f, 24);
 
     println!("cargo:rerun-if-changed=build.rs");
     println!("cargo:rerun-if-changed=tinted-schemes/");
