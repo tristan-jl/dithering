@@ -7,6 +7,7 @@ pub use space::ColourSpace;
 use image::RgbImage;
 use itertools::Itertools;
 
+#[cfg(feature = "theme")]
 pub mod themes {
     include!(concat!(env!("OUT_DIR"), "/theme.rs"));
 }

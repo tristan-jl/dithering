@@ -51,6 +51,11 @@ fn write(in_dir: &OsStr, out_file: &mut File, num_colours: u8) {
 }
 
 fn main() {
+    let incl_themes = env::var("CARGO_FEATURE_THEME").is_ok();
+    if !incl_themes {
+        return;
+    }
+
     let in_dir = env::var_os("THEME_DIR").unwrap_or("./tinted-schemes/".into());
     if !Path::new(&in_dir).exists() {
         let _ = Command::new("git")

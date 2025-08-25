@@ -10,3 +10,7 @@ itertools = "0.14"
 
 [build-dependencies]
 serde_yaml = "0.9"
+
+[features]
+default = ["theme"]
+theme = []
